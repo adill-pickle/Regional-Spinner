@@ -98,7 +98,7 @@
         function showError(error) {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
-                    alert("User denied the request for Geolocation.");
+                    alert("User denied the request for Geolocation. Please enable location services and try again.");
                     break;
                 case error.POSITION_UNAVAILABLE:
                     alert("Location information is unavailable.");
@@ -110,27 +110,383 @@
                     alert("An unknown error occurred.");
                     break;
             }
+            // Fallback mechanism: prompt the user to enter their location manually
+            promptForLocation();
+        }
+
+        function promptForLocation() {
+            const lat = prompt("Enter your latitude:");
+            const lng = prompt("Enter your longitude:");
+            if (lat && lng) {
+                findRestaurantsWithCoordinates(lat, lng);
+            } else {
+                alert("Location information is required to find restaurants.");
+            }
         }
 
         function findRestaurants() {
             getCurrentLocation(function(position) {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
-                const restaurantType = document.getElementById('restaurantType').value;
-                const fareType = document.getElementById('fareType').value;
-
-                const apiKey = 'AIzaSyAu3wgBYxwa9LWkDLdHGl9oTFsekMUzH8c'; // Replace with your actual API key
-                const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${restaurantType}&keyword=${fareType}&key=${apiKey}`;
-
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        displayResults(data.results);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching data:', error);
-                    });
+                findRestaurantsWithCoordinates(lat, lng);
             });
+        }
+
+        function findRestaurantsWithCoordinates(lat, lng) {
+            const restaurantType = document.getElementById('restaurantType').value;
+            const fareType = document.getElementById('fareType').value;
+
+            const apiKey = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        main {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Restaurant Finder</h1>
+    </header>
+    <main>
+        <label for="restaurantType">Select Restaurant Type:</label>
+        <select id="restaurantType"></select>
+
+        <label for="fareType">Select Fare Type:</label>
+        <select id="fareType"></select>
+
+        <button onclick="findRestaurants()">Find Restaurants</button>
+
+        <div class="results" id="results"></div>
+    </main>
+
+    <script>
+        const restaurantTypes = ["Bar", "Cafe", "Brew House", "Fine Dining", "Ethnic", "Pop-up", "Ghost Kitchen"];
+        const fareTypes = ["Sushi", "Sandwich", "Mexican", "Italian", "Chinese", "Thai", "Japanese", "Vietnamese"];
+
+        function populateDropdowns() {
+            const restaurantTypeSelect = document.getElementById('restaurantType');
+            const fareTypeSelect = document.getElementById('fareType');
+
+            restaurantTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.toLowerCase().replace(/ /g, '_');
+                option.textContent = type;
+                restaurantTypeSelect.appendChild(option);
+            });
+
+            fareTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.toLowerCase().replace(/ /g, '_');
+                option.textContent = type;
+                fareTypeSelect.appendChild(option);
+            });
+        }
+
+        function getCurrentLocation(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(callback, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation. Please enable location services and try again.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+            // Fallback mechanism: prompt the user to enter their location manually
+            promptForLocation();
+        }
+
+        function promptForLocation() {
+            const lat = prompt("Enter your latitude:");
+            const lng = prompt("Enter your longitude:");
+            if (lat && lng) {
+                findRestaurantsWithCoordinates(lat, lng);
+            } else {
+                alert("Location information is required to find restaurants.");
+            }
+        }
+
+        function findRestaurants() {
+            getCurrentLocation(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                findRestaurantsWithCoordinates(lat, lng);
+            });
+        }
+
+        function findRestaurantsWithCoordinates(lat, lng) {
+            const restaurantType = document.getElementById('restaurantType').value;
+            const fareType = document.getElementById('fareType').value;
+
+            const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY'; // Replace with your actual API key
+            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${restaurantType}&keyword=${fareType}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.results);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.innerHTML = `<h3>${result.name}</h3><p>Rating: ${result.rating}</p><p>${result.vicinity}</p>`;
+                resultsDiv.appendChild(div);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', populateDropdowns);
+    </script>
+</body>
+</html>'<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        main {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Restaurant Finder</h1>
+    </header>
+    <main>
+        <label for="restaurantType">Select Restaurant Type:</label>
+        <select id="restaurantType"></select>
+
+        <label for="fareType">Select Fare Type:</label>
+        <select id="fareType"></select>
+
+        <button onclick="findRestaurants()">Find Restaurants</button>
+
+        <div class="results" id="results"></div>
+    </main>
+
+    <script>
+        const restaurantTypes = ["Bar", "Cafe", "Brew House", "Fine Dining", "Ethnic", "Pop-up", "Ghost Kitchen"];
+        const fareTypes = ["Sushi", "Sandwich", "Mexican", "Italian", "Chinese", "Thai", "Japanese", "Vietnamese"];
+
+        function populateDropdowns() {
+            const restaurantTypeSelect = document.getElementById('restaurantType');
+            const fareTypeSelect = document.getElementById('fareType');
+
+            restaurantTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.toLowerCase().replace(/ /g, '_');
+                option.textContent = type;
+                restaurantTypeSelect.appendChild(option);
+            });
+
+            fareTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type.toLowerCase().replace(/ /g, '_');
+                option.textContent = type;
+                fareTypeSelect.appendChild(option);
+            });
+        }
+
+        function getCurrentLocation(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(callback, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation. Please enable location services and try again.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+            // Fallback mechanism: prompt the user to enter their location manually
+            promptForLocation();
+        }
+
+        function promptForLocation() {
+            const lat = prompt("Enter your latitude:");
+            const lng = prompt("Enter your longitude:");
+            if (lat && lng) {
+                findRestaurantsWithCoordinates(lat, lng);
+            } else {
+                alert("Location information is required to find restaurants.");
+            }
+        }
+
+        function findRestaurants() {
+            getCurrentLocation(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                findRestaurantsWithCoordinates(lat, lng);
+            });
+        }
+
+        function findRestaurantsWithCoordinates(lat, lng) {
+            const restaurantType = document.getElementById('restaurantType').value;
+            const fareType = document.getElementById('fareType').value;
+
+            const apiKey = 'YOUR_GOOGLE_PLACES_API_KEY'; // Replace with your actual API key
+            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${restaurantType}&keyword=${fareType}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.results);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+                return;
+            }
+
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.innerHTML = `<h3>${result.name}</h3><p>Rating: ${result.rating}</p><p>${result.vicinity}</p>`;
+                resultsDiv.appendChild(div);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', populateDropdowns);
+    </script>
+</body>
+</html>'AIzaSyAu3wgBYxwa9LWkDLdHGl9oTFsekMUzH8c'; // Replace with your actual API key
+            const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=10000&type=${restaurantType}&keyword=${fareType}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data.results);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
         }
 
         function displayResults(results) {
